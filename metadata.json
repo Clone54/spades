@@ -1,0 +1,5 @@
+{
+  "name": "Spades Card Game",
+  "description": "A classic Spades card game with a user-friendly interface and intelligent AI opponents. Play in partnership mode against AI, make your bids, and be the first team to reach 500 points.",
+  "requestFramePermissions": []
+}

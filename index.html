@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spades Card Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* New Background Styles */
+        .bg-felt-green {
+            background-color: #054a29;
+            background-image: 
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 60%),
+                radial-gradient(ellipse at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+        .bg-dark-wood {
+            background-color: #5a3825;
+            background-image: 
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 60%),
+                repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,.1) 7px, rgba(0,0,0,.1) 8px),
+                repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,.1) 15px, rgba(0,0,0,.1) 16px);
+        }
+
+        /* Spades Broken Animation */
+        @keyframes burst-text {
+            0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            30% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+            80% { transform: scale(1.1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.1) rotate(0deg); opacity: 0; }
+        }
+        .animate-burst-text {
+            animation: burst-text 1.5s ease-out forwards;
+        }
+
+        @keyframes burst-effect {
+            0% { transform: scale(0); opacity: 0.8; border-width: 1rem; }
+            100% { transform: scale(3); opacity: 0; border-width: 0px; }
+        }
+        .animate-burst-effect {
+            animation: burst-effect 0.8s ease-out forwards;
+        }
+
+        @keyframes slide-to-north {
+            to { transform: translateY(-25vh) scale(0.2); opacity: 0; }
+        }
+        @keyframes slide-to-south {
+            to { transform: translateY(25vh) scale(0.2); opacity: 0; }
+        }
+        @keyframes slide-to-west {
+            to { transform: translateX(-35vw) scale(0.2); opacity: 0; }
+        }
+        @keyframes slide-to-east {
+            to { transform: translateX(35vw) scale(0.2); opacity: 0; }
+        }
+        .animate-trick-to-north { animation: slide-to-north 1s ease-in forwards; }
+        .animate-trick-to-south { animation: slide-to-south 1s ease-in forwards; }
+        .animate-trick-to-west { animation: slide-to-west 1s ease-in forwards; }
+        .animate-trick-to-east { animation: slide-to-east 1s ease-in forwards; }
+
+        /* Card Dealing Animations */
+        @keyframes deal-to-north {
+            from { transform: translate(0, 0) scale(1); opacity: 1; }
+            to { transform: translate(0, -28vh) scale(0.3); opacity: 0; }
+        }
+        @keyframes deal-to-south {
+            from { transform: translate(0, 0) scale(1); opacity: 1; }
+            to { transform: translate(0, 28vh) scale(0.3); opacity: 0; }
+        }
+        @keyframes deal-to-west {
+            from { transform: translate(0, 0) scale(1); opacity: 1; }
+            to { transform: translate(-40vw, 0) scale(0.3); opacity: 0; }
+        }
+        @keyframes deal-to-east {
+            from { transform: translate(0, 0) scale(1); opacity: 1; }
+            to { transform: translate(40vw, 0) scale(0.3); opacity: 0; }
+        }
+        .animate-deal-to-north { animation: deal-to-north 0.5s ease-out forwards; }
+        .animate-deal-to-south { animation: deal-to-south 0.5s ease-out forwards; }
+        .animate-deal-to-west { animation: deal-to-west 0.5s ease-out forwards; }
+        .animate-deal-to-east { animation: deal-to-east 0.5s ease-out forwards; }
+
+        /* Card Playing Animations */
+        @keyframes play-from-south { from { transform: translateY(15vh) scale(1.2); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes play-from-north { from { transform: translateY(-15vh) scale(1.2); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes play-from-west { from { transform: translateX(-25vw) scale(1.2); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
+        @keyframes play-from-east { from { transform: translateX(25vw) scale(1.2); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
+        .animate-play-from-south { animation: play-from-south 0.5s ease-out forwards; }
+        .animate-play-from-north { animation: play-from-north 0.5s ease-out forwards; }
+        .animate-play-from-west { animation: play-from-west 0.5s ease-out forwards; }
+        .animate-play-from-east { animation: play-from-east 0.5s ease-out forwards; }
+
+        /* Scoreboard Update Animation */
+        @keyframes score-update-glow {
+            0%, 100% {
+                box-shadow: 0 0 0px rgba(255, 235, 59, 0);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 235, 59, 0.8);
+                transform: scale(1.05);
+            }
+        }
+        .animate-score-update {
+            animation: score-update-glow 1.5s ease-in-out;
+        }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react/": "https://esm.sh/react@18.2.0/",
+          "react-dom": "https://esm.sh/react-dom@18.2.0",
+          "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+          "@google/genai": "https://esm.sh/@google/genai"
+        }
+      }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-900 text-white">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
